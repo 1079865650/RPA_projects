@@ -33,7 +33,7 @@ def re_re(name_list):
 #
 str1 = 'Monthly Unified Summary Report for Feb 1, 2023 00:00 PST - Feb 28, 2023 23:59 PST'
 str2 = 'Monthly Unified Transaction Report for Feb 1, 2023 00:00 PST - Feb 28, 2023 23:59 PST'
-name_list = [str1, str2]
+# name_list = [str1, str2]
 # re_re(name_list)
 # str3 = str1.upper()
 # print(str3)
@@ -56,6 +56,25 @@ def rename_file(folder_path):
         b = i[1]
         os.rename(a, b)
 
+
+# obtain the file name of the file that needs to be moved
+def remove_file_to_smb():
+    file_path = os.path.join(origin_path, datetime.datetime.now().strftime("%Y-%m"))
+    g = os.walk(file_path)
+    dir_file = []
+    for path, dir_list, file_list in g:
+        for i in file_list:
+            if i == 'data.xlsx':
+                continue
+            absolute_path = os.path.join(path, i)
+            folder = path.split("\\")[-1]
+            item = [folder, absolute_path]
+            dir_file.append(item)
+    print("=========dir_file folder and filename", dir_file)
+    return dir_file
+
+
+remove_file_to_smb()
 
 
 

@@ -145,5 +145,16 @@ def judge_all_b2c(string_value):
 
 
 
-# add('payment:before:'+'test', 1, 60*60*24*10)
-# write_to_excel([1312321, 212321], 'EU')
+
+
+
+
+
+
+
+
+
+
+
+
+
