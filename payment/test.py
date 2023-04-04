@@ -74,7 +74,28 @@ def remove_file_to_smb():
     return dir_file
 
 
-remove_file_to_smb()
+# remove_file_to_smb()
+
+# a = {}
+# if not len(list(a.keys())):
+#     print('ss')
+# country_abbreviation = {'Germany': 'DE', 'France': 'FR', 'Italy': 'IT', 'Spain': 'ES', 'United Kingdom': 'UK',
+#                             'Poland': 'PL', 'Turkey': 'TR', 'Netherlands': 'NL', 'Belgium': 'BE', 'Sweden': 'SE',
+#                             'Japan': 'JP', 'United States': 'US', 'Mexico': 'MX', 'Canada': 'CA'}
+# list1 = []
+# for i in country_abbreviation.keys():
+#     list1.append(i)
+# print(list1)
+
+date_time = datetime.datetime.now().strftime("%Y-%m")
+date_split = date_time.split("-")
+compare_time = datetime.datetime(int(date_split[0]), int(date_split[1]), 1, 17, 0, 0)
+now = datetime.datetime.now()
+# print(now)
+# print(compare_time)
+# print(date_time)
+# print(now > compare_time)
+
 
 
 

@@ -86,13 +86,16 @@ def rename_file(site, country, us_category=""):
             item = [absolute_path, modify_path]
             absolute_path_list.append(item)
     print(absolute_path_list)
+    path_str = ''
     for i in absolute_path_list:
         a = i[0]
         b = i[1]
+        str1 = b.split("\\")[-1]
+        path_str = str1 + ','
         if os.path.exists(b):
             os.remove(b)  # if the file is exists,delete it
         os.rename(a, b)
-    return absolute_path_list
+    return path_str
 
 
 # determine the prefix for file naming
@@ -130,11 +133,28 @@ def delete_key(rd_key):
 
 
 def add_redis(country):
-    add("payment:before:"+country, 1, expiration_time)
+    date_str = datetime.datetime.now().strftime("%Y-%m")
+    add("payment:before:"+date_str+country, 1, expiration_time)
 
 
 def add_redis_download(country):
     add("payment:downloaded:"+country, 1, expiration_time)
+
+
+def delete_all_keys():
+    redis_conn = redis.Redis(host=redis_host, port=redis_port, db=redis_db)
+    keys = redis_conn.keys()
+    key_list = []
+    for key in keys:
+        if 'payment' in bytes(key).decode('utf-8') and 'test' not in bytes(key).decode('utf-8'):
+            key_list.append(key)
+    for i in key_list:
+        redis_conn.delete(i)
+    redis_conn.close()
+    print("=========key_list  delete key values about redis", key_list)
+
+
+
 
 
 def judge_all_b2c(string_value):
@@ -142,6 +162,72 @@ def judge_all_b2c(string_value):
     if 'Unified' in string_split:
         return 'ALL'
     return 'B2C'
+
+
+def remove_file_to_smb():
+    # file_path = os.path.join(origin_path, datetime.datetime.now().strftime("%Y-%m"))
+    file_path = os.path.join(origin_path, datetime.datetime.now().strftime("2023-03"))
+    print(file_path)
+    g = os.walk(file_path)
+    dir_file = []
+    for path, dir_list, file_list in g:
+        for i in file_list:
+            if i == 'data.xlsx':
+                continue
+            # absolute_path = os.path.join(path, i)
+            folder = path.split("\\")[-1]
+            item = [folder, path, i]
+            dir_file.append(item)
+    print("=========dir_file folder and filename", dir_file)
+    return dir_file
+#
+# a = remove_file_to_smb()
+# print(a)
+
+
+def excel_path():
+    return [Excel_EU_path, Excel_US_path, Excel_JP_path]
+
+
+def query_keys_number():
+    redis_conn = redis.Redis(host=redis_host, port=redis_port, db=redis_db)
+    keys = redis_conn.keys()
+    key_list_before = []
+    key_list_downloaded = []
+    pre_key = datetime.datetime.now().strftime("%Y-%m")
+    country_list = ['Germany', 'France', 'Italy', 'Spain', 'United Kingdom', 'Poland', 'Turkey', 'Netherlands',
+                    'Belgium', 'Sweden', 'Japan', 'United States', 'Mexico', 'Canada']
+    before_list = []
+    downloaded_list = []
+    for i in country_list:
+        ii = 'payment:before:' + pre_key + i
+        aa = 'payment:downloaded:' + i
+        before_list.append(ii)
+        downloaded_list.append(aa)
+    print(before_list)
+    for key in keys:
+        key_str = bytes(key).decode('utf-8')
+        if key_str in before_list:
+            key_list_before.append(key_str)
+        if key_str in downloaded_list:
+            key_list_downloaded.append(key_str)
+    return [len(key_list_before), len(key_list_downloaded)]
+
+
+a = query_keys_number()
+print(a)
+
+
+# is the time after 5 pm on first day of each month?
+def judge_time():
+    date_time = datetime.datetime.now().strftime("%Y-%m")
+    date_split = date_time.split("-")
+    compare_time = datetime.datetime(int(date_split[0]), int(date_split[1]), 1, 17, 0, 0)
+    now = datetime.datetime.now()
+    return now > compare_time
+
+
+
 
 
 
