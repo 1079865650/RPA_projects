@@ -96,6 +96,15 @@ now = datetime.datetime.now()
 # print(date_time)
 # print(now > compare_time)
 
+a = [1, 23, 43]
+b = str(a)
+print(b[1:-2])
+print(type(b))
+
+
+
+
+
 
 
 
